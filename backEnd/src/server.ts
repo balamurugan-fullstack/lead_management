@@ -20,6 +20,12 @@ app.use(cors({
 }));
 app.use(morgan('dev'));
 app.use(express.json());
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Lead Management API is running"
+  });
+});
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
