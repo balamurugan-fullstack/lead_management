@@ -83,18 +83,21 @@ const LeadsPage = () => {
         </Link>
       </div>
       <div className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-3">
-        <input className="rounded-lg border border-slate-200 px-3 py-2" placeholder="Search by title/company/email" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <input className="rounded-lg border border-slate-200 px-3 py-2" placeholder="Search by name/company/email" value={search} onChange={(e) => setSearch(e.target.value)} />
         <select className="rounded-lg border border-slate-200 px-3 py-2" value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="">All statuses</option>
           <option value="new">New</option>
           <option value="contacted">Contacted</option>
-          <option value="converted">Converted</option>
+          <option value="qualified">Qualified</option>
+          <option value="won">Won</option>
+          <option value="lost">Lost</option>
         </select>
         <select className="rounded-lg border border-slate-200 px-3 py-2" value={source} onChange={(e) => setSource(e.target.value)}>
           <option value="">All sources</option>
           <option value="website">Website</option>
           <option value="referral">Referral</option>
           <option value="social">Social</option>
+          <option value="other">Other</option>
         </select>
       </div>
       {error && <StatusBanner type="error" message={error} onDismiss={() => setError(null)} />}
@@ -103,8 +106,10 @@ const LeadsPage = () => {
         <table className="min-w-full text-sm">
           <thead className="bg-slate-50 text-left text-slate-600">
             <tr>
-              <th className="p-4">Title</th>
+              <th className="p-4">Name</th>
               <th className="p-4">Company</th>
+              <th className="p-4">Email</th>
+              <th className="p-4">Phone</th>
               <th className="p-4">Status</th>
               <th className="p-4">Source</th>
               <th className="p-4">Actions</th>
@@ -116,6 +121,8 @@ const LeadsPage = () => {
                 <tr key={index} className="border-t border-slate-100">
                   <td className="p-4"><div className="h-4 w-24 animate-pulse rounded bg-slate-200" /></td>
                   <td className="p-4"><div className="h-4 w-24 animate-pulse rounded bg-slate-200" /></td>
+                  <td className="p-4"><div className="h-4 w-24 animate-pulse rounded bg-slate-200" /></td>
+                  <td className="p-4"><div className="h-4 w-20 animate-pulse rounded bg-slate-200" /></td>
                   <td className="p-4"><div className="h-4 w-16 animate-pulse rounded bg-slate-200" /></td>
                   <td className="p-4"><div className="h-4 w-16 animate-pulse rounded bg-slate-200" /></td>
                   <td className="p-4"><div className="h-4 w-12 animate-pulse rounded bg-slate-200" /></td>
@@ -123,15 +130,17 @@ const LeadsPage = () => {
               ))
             ) : leads.length === 0 ? (
               <tr>
-                <td colSpan={5} className="p-8 text-center text-slate-500">No leads found.</td>
+                <td colSpan={7} className="p-8 text-center text-slate-500">No leads found.</td>
               </tr>
             ) : (
               leads.map((lead) => (
                 <tr key={lead.id} className="border-t border-slate-100">
-                  <td className="p-4">{lead.title}</td>
+                  <td className="p-4">{lead.name}</td>
                   <td className="p-4">{lead.company}</td>
+                  <td className="p-4">{lead.email || '—'}</td>
+                  <td className="p-4">{lead.phone || '—'}</td>
                   <td className="p-4">{lead.status}</td>
-                  <td className="p-4">{lead.source}</td>
+                  <td className="p-4">{lead.source || '—'}</td>
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <Link to={`/leads/${lead.id}/edit`} className="text-cyan-600">Edit</Link>

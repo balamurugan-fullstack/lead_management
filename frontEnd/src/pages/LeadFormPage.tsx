@@ -6,13 +6,12 @@ import type { LeadFormData } from '../types';
 import { getErrorMessage } from '../utils/error';
 
 const defaultValues: LeadFormData = {
-  title: '',
+  name: '',
   company: '',
   email: '',
   phone: '',
   status: 'new',
   source: 'website',
-  value: '',
   notes: '',
 };
 
@@ -34,13 +33,12 @@ const LeadFormPage = () => {
         setIsLoading(true);
         const res = await api.get(`/leads/${id}`);
         setForm({
-          title: res.data.title || '',
+          name: res.data.name || '',
           company: res.data.company || '',
           email: res.data.email || '',
           phone: res.data.phone || '',
           status: res.data.status || 'new',
           source: res.data.source || 'website',
-          value: res.data.value?.toString() || '',
           notes: res.data.notes || '',
         });
       } catch (err) {
@@ -61,10 +59,9 @@ const LeadFormPage = () => {
 
   const validate = () => {
     const nextErrors: Partial<Record<keyof LeadFormData, string>> = {};
-    if (!form.title.trim()) nextErrors.title = 'Lead title is required.';
+    if (!form.name.trim()) nextErrors.name = 'Lead name is required.';
     if (!form.company.trim()) nextErrors.company = 'Company is required.';
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) nextErrors.email = 'Enter a valid email address.';
-    if (form.value && Number.isNaN(Number(form.value))) nextErrors.value = 'Enter a valid number.';
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
@@ -77,8 +74,13 @@ const LeadFormPage = () => {
 
     try {
       const payload = {
-        ...form,
-        value: form.value ? Number(form.value) : undefined,
+        name: form.name,
+        company: form.company,
+        email: form.email,
+        phone: form.phone,
+        status: form.status,
+        source: form.source,
+        notes: form.notes,
       };
       if (isEdit) {
         await api.put(`/leads/${id}`, payload);
@@ -105,8 +107,8 @@ const LeadFormPage = () => {
       ) : (
         <form className="mt-6 grid gap-4 md:grid-cols-2" onSubmit={handleSubmit}>
           <div>
-            <input className={`rounded-lg border border-slate-200 p-3 w-full ${errors.title ? 'border-rose-400' : ''}`} placeholder="Lead title" value={form.title} onChange={(e) => { setForm({ ...form, title: e.target.value }); if (errors.title) setErrors((current) => ({ ...current, title: undefined })); }} required />
-            {errors.title && <p className="mt-1 text-sm font-medium text-rose-500">{errors.title}</p>}
+            <input className={`rounded-lg border border-slate-200 p-3 w-full ${errors.name ? 'border-rose-400' : ''}`} placeholder="Name" value={form.name} onChange={(e) => { setForm({ ...form, name: e.target.value }); if (errors.name) setErrors((current) => ({ ...current, name: undefined })); }} required />
+            {errors.name && <p className="mt-1 text-sm font-medium text-rose-500">{errors.name}</p>}
           </div>
           <div>
             <input className={`rounded-lg border border-slate-200 p-3 w-full ${errors.company ? 'border-rose-400' : ''}`} placeholder="Company" value={form.company} onChange={(e) => { setForm({ ...form, company: e.target.value }); if (errors.company) setErrors((current) => ({ ...current, company: undefined })); }} required />
@@ -120,17 +122,17 @@ const LeadFormPage = () => {
           <select className="rounded-lg border border-slate-200 p-3" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
             <option value="new">New</option>
             <option value="contacted">Contacted</option>
-            <option value="converted">Converted</option>
+            <option value="qualified">Qualified</option>
+            <option value="won">Won</option>
+            <option value="lost">Lost</option>
           </select>
           <select className="rounded-lg border border-slate-200 p-3" value={form.source} onChange={(e) => setForm({ ...form, source: e.target.value })}>
+            <option value="">Select source</option>
             <option value="website">Website</option>
             <option value="referral">Referral</option>
             <option value="social">Social</option>
+            <option value="other">Other</option>
           </select>
-          <div>
-            <input className={`rounded-lg border border-slate-200 p-3 w-full ${errors.value ? 'border-rose-400' : ''}`} placeholder="Value" type="number" value={form.value} onChange={(e) => { setForm({ ...form, value: e.target.value }); if (errors.value) setErrors((current) => ({ ...current, value: undefined })); }} />
-            {errors.value && <p className="mt-1 text-sm font-medium text-rose-500">{errors.value}</p>}
-          </div>
           <textarea className="rounded-lg border border-slate-200 p-3 md:col-span-2" placeholder="Notes" rows={4} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
           <div className="md:col-span-2 flex gap-3">
             <button className="cursor-pointer rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 disabled:cursor-not-allowed disabled:opacity-70" type="submit" disabled={isSubmitting}>
