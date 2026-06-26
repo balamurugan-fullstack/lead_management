@@ -61,7 +61,16 @@ const LeadFormPage = () => {
     const nextErrors: Partial<Record<keyof LeadFormData, string>> = {};
     if (!form.name.trim()) nextErrors.name = 'Lead name is required.';
     if (!form.company.trim()) nextErrors.company = 'Company is required.';
-    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) nextErrors.email = 'Enter a valid email address.';
+    if (!form.email.trim()) {
+      nextErrors.email = 'Email is required.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      nextErrors.email = 'Enter a valid email address.';
+    }
+    if (!form.phone.trim()) {
+      nextErrors.phone = 'Mobile number is required.';
+    } else if (!/^[0-9+\-()\s]{7,15}$/.test(form.phone)) {
+      nextErrors.phone = 'Enter a valid mobile number.';
+    }
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
@@ -115,10 +124,13 @@ const LeadFormPage = () => {
             {errors.company && <p className="mt-1 text-sm font-medium text-rose-500">{errors.company}</p>}
           </div>
           <div>
-            <input className={`rounded-lg border border-slate-200 p-3 w-full ${errors.email ? 'border-rose-400' : ''}`} placeholder="Email" type="email" value={form.email} onChange={(e) => { setForm({ ...form, email: e.target.value }); if (errors.email) setErrors((current) => ({ ...current, email: undefined })); }} />
+            <input className={`rounded-lg border border-slate-200 p-3 w-full ${errors.email ? 'border-rose-400' : ''}`} placeholder="Email" type="email" value={form.email} onChange={(e) => { setForm({ ...form, email: e.target.value }); if (errors.email) setErrors((current) => ({ ...current, email: undefined })); }} required />
             {errors.email && <p className="mt-1 text-sm font-medium text-rose-500">{errors.email}</p>}
           </div>
-          <input className="rounded-lg border border-slate-200 p-3" placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+          <div>
+            <input className={`rounded-lg border border-slate-200 p-3 w-full ${errors.phone ? 'border-rose-400' : ''}`} placeholder="Mobile number" value={form.phone} onChange={(e) => { setForm({ ...form, phone: e.target.value }); if (errors.phone) setErrors((current) => ({ ...current, phone: undefined })); }} required />
+            {errors.phone && <p className="mt-1 text-sm font-medium text-rose-500">{errors.phone}</p>}
+          </div>
           <select className="rounded-lg border border-slate-200 p-3" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
             <option value="new">New</option>
             <option value="contacted">Contacted</option>
