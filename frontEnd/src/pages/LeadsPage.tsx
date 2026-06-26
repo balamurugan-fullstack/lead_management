@@ -103,62 +103,110 @@ const LeadsPage = () => {
       {error && <StatusBanner type="error" message={error} onDismiss={() => setError(null)} />}
       {successMessage && <StatusBanner type="success" message={successMessage} onDismiss={() => setSuccessMessage(null)} />}
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <table className="min-w-full text-sm">
-          <thead className="bg-slate-50 text-left text-slate-600">
-            <tr>
-              <th className="p-4">Name</th>
-              <th className="p-4">Company</th>
-              <th className="p-4">Email</th>
-              <th className="p-4">Phone</th>
-              <th className="p-4">Status</th>
-              <th className="p-4">Source</th>
-              <th className="p-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              Array.from({ length: 4 }).map((_, index) => (
-                <tr key={index} className="border-t border-slate-100">
-                  <td className="p-4"><div className="h-4 w-24 animate-pulse rounded bg-slate-200" /></td>
-                  <td className="p-4"><div className="h-4 w-24 animate-pulse rounded bg-slate-200" /></td>
-                  <td className="p-4"><div className="h-4 w-24 animate-pulse rounded bg-slate-200" /></td>
-                  <td className="p-4"><div className="h-4 w-20 animate-pulse rounded bg-slate-200" /></td>
-                  <td className="p-4"><div className="h-4 w-16 animate-pulse rounded bg-slate-200" /></td>
-                  <td className="p-4"><div className="h-4 w-16 animate-pulse rounded bg-slate-200" /></td>
-                  <td className="p-4"><div className="h-4 w-12 animate-pulse rounded bg-slate-200" /></td>
-                </tr>
-              ))
-            ) : leads.length === 0 ? (
+        <div className="hidden md:block">
+          <table className="min-w-full text-sm">
+            <thead className="bg-slate-50 text-left text-slate-600">
               <tr>
-                <td colSpan={7} className="p-8 text-center text-slate-500">No leads found.</td>
+                <th className="p-4">Name</th>
+                <th className="p-4">Company</th>
+                <th className="p-4">Email</th>
+                <th className="p-4">Phone</th>
+                <th className="p-4">Status</th>
+                <th className="p-4">Source</th>
+                <th className="p-4">Actions</th>
               </tr>
-            ) : (
-              leads.map((lead) => (
-                <tr key={lead.id} className="border-t border-slate-100">
-                  <td className="p-4">{lead.name}</td>
-                  <td className="p-4">{lead.company}</td>
-                  <td className="p-4">{lead.email || '—'}</td>
-                  <td className="p-4">{lead.phone || '—'}</td>
-                  <td className="p-4">{lead.status}</td>
-                  <td className="p-4">{lead.source || '—'}</td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <Link to={`/leads/${lead.id}/edit`} className="text-cyan-600">Edit</Link>
-                      <button
-                        type="button"
-                        onClick={() => setConfirmDeleteId(lead.id)}
-                        disabled={deletingLeadId === lead.id}
-                        className="cursor-pointer text-rose-600 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        {deletingLeadId === lead.id ? 'Deleting...' : 'Delete'}
-                      </button>
-                    </div>
-                  </td>
+            </thead>
+            <tbody>
+              {isLoading ? (
+                Array.from({ length: 4 }).map((_, index) => (
+                  <tr key={index} className="border-t border-slate-100">
+                    <td className="p-4"><div className="h-4 w-24 animate-pulse rounded bg-slate-200" /></td>
+                    <td className="p-4"><div className="h-4 w-24 animate-pulse rounded bg-slate-200" /></td>
+                    <td className="p-4"><div className="h-4 w-24 animate-pulse rounded bg-slate-200" /></td>
+                    <td className="p-4"><div className="h-4 w-20 animate-pulse rounded bg-slate-200" /></td>
+                    <td className="p-4"><div className="h-4 w-16 animate-pulse rounded bg-slate-200" /></td>
+                    <td className="p-4"><div className="h-4 w-16 animate-pulse rounded bg-slate-200" /></td>
+                    <td className="p-4"><div className="h-4 w-12 animate-pulse rounded bg-slate-200" /></td>
+                  </tr>
+                ))
+              ) : leads.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="p-8 text-center text-slate-500">No leads found.</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                leads.map((lead) => (
+                  <tr key={lead.id} className="border-t border-slate-100">
+                    <td className="p-4">{lead.name}</td>
+                    <td className="p-4">{lead.company}</td>
+                    <td className="p-4">{lead.email || '—'}</td>
+                    <td className="p-4">{lead.phone || '—'}</td>
+                    <td className="p-4">{lead.status}</td>
+                    <td className="p-4">{lead.source || '—'}</td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <Link to={`/leads/${lead.id}/edit`} className="text-cyan-600">Edit</Link>
+                        <button
+                          type="button"
+                          onClick={() => setConfirmDeleteId(lead.id)}
+                          disabled={deletingLeadId === lead.id}
+                          className="cursor-pointer text-rose-600 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          {deletingLeadId === lead.id ? 'Deleting...' : 'Delete'}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="flex flex-col gap-3 p-3 md:hidden">
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div className="h-4 w-24 animate-pulse rounded bg-slate-200" />
+                <div className="mt-3 space-y-2">
+                  <div className="h-3 w-full animate-pulse rounded bg-slate-200" />
+                  <div className="h-3 w-3/4 animate-pulse rounded bg-slate-200" />
+                  <div className="h-3 w-1/2 animate-pulse rounded bg-slate-200" />
+                </div>
+              </div>
+            ))
+          ) : leads.length === 0 ? (
+            <div className="p-8 text-center text-slate-500">No leads found.</div>
+          ) : (
+            leads.map((lead) => (
+              <div key={lead.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold text-slate-900">{lead.name}</p>
+                    <p className="text-sm text-slate-600">{lead.company}</p>
+                  </div>
+                  <span className="rounded-full bg-cyan-100 px-2.5 py-1 text-xs font-medium text-cyan-700">
+                    {lead.status}
+                  </span>
+                </div>
+                <div className="mt-3 space-y-1 text-sm text-slate-600">
+                  <p><span className="font-medium text-slate-700">Email:</span> {lead.email || '—'}</p>
+                  <p><span className="font-medium text-slate-700">Phone:</span> {lead.phone || '—'}</p>
+                  <p><span className="font-medium text-slate-700">Source:</span> {lead.source || '—'}</p>
+                </div>
+                <div className="mt-4 flex items-center gap-3">
+                  <Link to={`/leads/${lead.id}/edit`} className="text-sm font-medium text-cyan-600">Edit</Link>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDeleteId(lead.id)}
+                    disabled={deletingLeadId === lead.id}
+                    className="text-sm font-medium text-rose-600 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {deletingLeadId === lead.id ? 'Deleting...' : 'Delete'}
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
       <ConfirmDialog
         open={confirmDeleteId !== null}
